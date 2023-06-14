@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Speer Technologies Android assessmen</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="uer_profile_image">uer_profile_image</string>
+    <string name="show_user_info">show_user_info</string>
+    <string name="search_hint">Search</string>
+    <string name="search_button">Search</string>
+    <string name="success_search">User found</string>
+    <string name="error_getting_user">Getting user failed. Check your internet connection</string>
+    <string name="error_user_not_available">Requested user was not available</string>
+    <string name="error_no_following">User follows no one</string>
+    <string name="error_no_followers">User has no followers</string>
+    <string name="username_text">User name: %s</string>
+    <string name="name_text">Name: %s</string>
+    <string name="followers_text">Followers: %s</string>
+    <string name="following_text">Following: %s</string>
+    <string name="deep_link_uri" translatable="false">myProject://com.hossain_ehs.speertechnologiesandroidassessmen/presentation/{username}</string>
+
+
+
+</resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/gitHubUserFragment">
+    <fragment
+        android:id="@+id/gitHubUserFragment"
+        android:name="com.hossain_ehs.speertechnologiesandroidassessmen.presentation.userInfo.GitHubUserFragment"
+        android:label="fragment_git_hub_user"
+        tools:layout="@layout/fragment_git_hub_user" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <deepLink app:uri="@string/deep_link_uri" />
+
+        <action
+            android:id="@+id/action_gitHubUserFragment_to_followersFragment"
+            app:destination="@id/followersFragment" />
+        <action
+            android:id="@+id/action_gitHubUserFragment_to_followingsFragment"
+            app:destination="@id/followingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/followersFragment"
+        android:name="com.hossain_ehs.speertechnologiesandroidassessmen.presentation.followers.FollowersFragment"
+        android:label="fragment_followers"
+        tools:layout="@layout/fragment_followers" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/followingsFragment"
+        android:name="com.hossain_ehs.speertechnologiesandroidassessmen.presentation.following.FollowingsFragment"
+        android:label="fragment_followings"
+        tools:layout="@layout/fragment_followings" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+    </fragment>
+</navigation>
