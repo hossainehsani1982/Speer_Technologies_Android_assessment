@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.hossain_ehs.speertechnologiesandroidassessmen.data.local.entity.GitHubUserEntity
 import com.hossain_ehs.speertechnologiesandroidassessmen.domain.model.RemoteGitHubUser
 import com.hossain_ehs.speertechnologiesandroidassessmen.domain.model.RemoteGithubUserInfo
+import retrofit2.Response
 
 interface Repository {
 
@@ -17,7 +18,7 @@ interface Repository {
 
     suspend fun getUserFollowers(
         userName: String
-    ): Result<List<RemoteGithubUserInfo>>
+    ): Response<List<RemoteGithubUserInfo>>
 
     suspend fun getUserFollowings(
         userName: String

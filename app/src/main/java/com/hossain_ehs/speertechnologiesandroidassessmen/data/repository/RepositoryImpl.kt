@@ -9,6 +9,7 @@ import com.hossain_ehs.speertechnologiesandroidassessmen.data.remote.GitHubApi
 import com.hossain_ehs.speertechnologiesandroidassessmen.domain.model.RemoteGitHubUser
 import com.hossain_ehs.speertechnologiesandroidassessmen.domain.model.RemoteGithubUserInfo
 import com.hossain_ehs.speertechnologiesandroidassessmen.domain.repository.Repository
+import retrofit2.Response
 
 class RepositoryImpl(
     private val gitHubApi: GitHubApi,
@@ -44,20 +45,25 @@ class RepositoryImpl(
         }
     }
 
+
     override suspend fun getUserFollowers(
         userName: String
-    ): Result<List<RemoteGithubUserInfo>> {
-        return try {
-           val response = gitHubApi.getUserFollowers(
-               userName = userName,
-           )
-            Result.success(response.mapNotNull {
-                it.toRemoteUserInfo()
-            })
-        }catch (e: Exception) {
-            Result.failure(e)
+    ): Response<List<RemoteGithubUserInfo>> {
+        val response = gitHubApi.getUserFollowers(
+            userName = userName,
+        )
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null) {
+                return Response.success(body.map {
+                    it.toRemoteUserInfo()
+                })
+            }
         }
+        return Response.error(response.code(), response.errorBody()!!)
     }
+
+
 
     override suspend fun getUserFollowings(
         userName: String
@@ -66,7 +72,7 @@ class RepositoryImpl(
             val response = gitHubApi.getUserFollowings(
                 userName = userName,
             )
-            Result.success(response.mapNotNull {
+            Result.success(response.map{
                 it.toRemoteUserInfo()
             })
         }catch (e: Exception) {

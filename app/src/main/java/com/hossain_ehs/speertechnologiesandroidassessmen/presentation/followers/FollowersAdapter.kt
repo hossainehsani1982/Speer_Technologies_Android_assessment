@@ -2,6 +2,7 @@ package com.hossain_ehs.speertechnologiesandroidassessmen.presentation.followers
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,7 @@ import com.hossain_ehs.speertechnologiesandroidassessmen.databinding.UserItemBin
 import com.hossain_ehs.speertechnologiesandroidassessmen.domain.model.RemoteGithubUserInfo
 
 class FollowersAdapter(private val listener: OnUserItemClickedListener) :
-    ListAdapter<RemoteGithubUserInfo, FollowersAdapter.FollowersViewHolder>(DiffCallBack()) {
+    PagingDataAdapter<RemoteGithubUserInfo, FollowersAdapter.FollowersViewHolder>(DiffCallBack()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowersViewHolder {
         val binding = UserItemBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -23,7 +24,8 @@ class FollowersAdapter(private val listener: OnUserItemClickedListener) :
 
     override fun onBindViewHolder(holder: FollowersViewHolder, position: Int) {
         val currentUser = getItem(position)
-        holder.bind(currentUser)
+        holder.setIsRecyclable(false)
+        holder.bind(currentUser.let { it!! })
     }
 
 

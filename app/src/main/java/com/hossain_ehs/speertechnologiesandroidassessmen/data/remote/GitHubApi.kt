@@ -5,6 +5,7 @@ import com.hossain_ehs.speertechnologiesandroidassessmen.data.remote.dto.Followi
 import com.hossain_ehs.speertechnologiesandroidassessmen.data.remote.dto.Item
 import com.hossain_ehs.speertechnologiesandroidassessmen.data.remote.dto.SearchDto
 import com.hossain_ehs.speertechnologiesandroidassessmen.data.remote.dto.UserDto
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -32,7 +33,7 @@ interface GitHubApi {
     @GET("/users/{username}/followers")
     suspend fun getUserFollowers(
         @Path("username") userName : String
-    ) : List<UserDto>
+    ) : Response<List<UserDto>>
 
     //get following of a user
     @GET("/users/{username}/following")

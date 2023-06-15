@@ -4,10 +4,13 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -16,15 +19,16 @@ import com.hossain_ehs.speertechnologiesandroidassessmen.data.util.FollowersUiEv
 import com.hossain_ehs.speertechnologiesandroidassessmen.databinding.FragmentFollowersBinding
 import com.hossain_ehs.speertechnologiesandroidassessmen.domain.model.RemoteGithubUserInfo
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FollowersFragment : Fragment(R.layout.fragment_followers),
-    FollowersAdapter.OnUserItemClickedListener
-{
+    FollowersAdapter.OnUserItemClickedListener {
 
     private lateinit var binding: FragmentFollowersBinding
     private val viewModel: FollowersViewModel by viewModels()
-    private lateinit var  followersAdapter : FollowersAdapter
+    private lateinit var followersAdapter: FollowersAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,23 +44,36 @@ class FollowersFragment : Fragment(R.layout.fragment_followers),
     private fun subscribeToObservers() {
         viewModel.followersChannel.asLiveData().observe(viewLifecycleOwner) { results ->
             when (results) {
-                 is FollowersUiEvents.LoadData -> {
-                     binding.apply {
-                         rvFollowers.apply {
-                             adapter = followersAdapter
-                             addItemDecoration(
-                                 DividerItemDecoration(
-                                     view?.context,
-                                     DividerItemDecoration.VERTICAL
-                                 )
-                             )
-                             adapter = followersAdapter
-                             layoutManager = LinearLayoutManager(requireContext())
-                             followersAdapter.submitList(viewModel.state.followersList)
-                         }
+                is FollowersUiEvents.LoadData -> {
+                    binding.apply {
+                        rvFollowers.apply {
+                            adapter = followersAdapter
+                            addItemDecoration(
+                                DividerItemDecoration(
+                                    view?.context,
+                                    DividerItemDecoration.VERTICAL
+                                )
+                            )
+                            adapter = followersAdapter
+                            layoutManager = LinearLayoutManager(requireContext())
 
-                     }
+                            lifecycleScope.launch {
+                                viewModel.followersList.collect() {
+                                    followersAdapter.submitData(it)
+                                }
+                            }
+                            lifecycleScope.launch {
+                                followersAdapter.loadStateFlow.collect{
+                                    val state = it.refresh
+                                    progressBar.isVisible = state is LoadState.Loading
+                                }
+                            }
+
+                        }
+
+                    }
                 }
+
                 is FollowersUiEvents.ShowSnackBar -> {
                     Snackbar.make(
                         requireView(),
@@ -64,10 +81,12 @@ class FollowersFragment : Fragment(R.layout.fragment_followers),
                         Snackbar.LENGTH_LONG
                     ).show()
                 }
+
                 is FollowersUiEvents.OnNavigateToUserInfoClicked -> {
                     val deeplink = NavDeepLinkRequest.Builder.fromUri(
                         Uri.parse(
-                            getString(R.string.deep_link_uri
+                            getString(
+                                R.string.deep_link_uri
                             ).replace(
                                 "{username}",
                                 results.user.login
