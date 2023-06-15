@@ -24,12 +24,16 @@ class AppPagingSource (
             )
             val data = response.body()!!
             val responseData = mutableListOf<RemoteGithubUserInfo>()
-            responseData.addAll(data)
-            LoadResult.Page(
-                data = responseData,
-                prevKey = if (currentPage == 1) null else currentPage - 1,
-                nextKey = if (data.isEmpty()) null else currentPage + 1
-            )
+            if(data.isNullOrEmpty().not()){
+                responseData.addAll(data)
+                LoadResult.Page(
+                    data = responseData,
+                    prevKey = if (currentPage == 1) null else currentPage - 1,
+                    nextKey = if (data.isEmpty()) null else currentPage + 1
+                )
+            }else{
+                LoadResult.Error(Throwable("No Data Found"))
+            }
         }catch (e: Exception){
             LoadResult.Error(e)
         }catch (e: HttpException){
